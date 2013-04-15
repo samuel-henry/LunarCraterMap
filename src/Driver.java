@@ -10,7 +10,8 @@ import java.util.Collections;
 public class Driver {
 	public static void main(String[] args) {
 		BufferedReader br = null;
-		String pathToFile = "venusdb_tabdelimited.txt";
+		//String pathToFile = "venusdb_tabdelimited.txt";
+		String pathToFile = "lunarcraters.txt";
 		Vertex newVertex;
 		
 		try {
@@ -26,9 +27,8 @@ public class Driver {
 	        String[] line = null;
 	        int id;
 	        String name;
-	        double xValue, yValue, zValue;
-	        
-	        //initialize customers map to hashmap of String (name) --> Acount
+	        double latitude, longitude, depth, diameter;
+	       
 	        ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	         
 	        //keep reading while there's more to read 
@@ -36,13 +36,13 @@ public class Driver {
 				//split the current line into an array of strings 
 				line = br.readLine().split("\t");
 				
-				id = Integer.valueOf(line[0]);
-				name = line[1];
-				xValue = Double.valueOf(line[2]);
-				yValue = Double.valueOf(line[3]);
-				zValue = Double.valueOf(line[4]);
+				name = line[0];
+				latitude = getValue(line[2]); //latitude of crater
+				longitude = getValue(line[3]); //longitude of crater
+				diameter = getValue(line[1]); //diameter of crater
+				depth = Double.valueOf(line[12]); //depth of crater
 				
-				newVertex = new Vertex(id, name, xValue, yValue, zValue);
+				newVertex = new Vertex(name, latitude, longitude, diameter, depth);
 				vertices.add(newVertex);
 				System.out.println("Added: " + newVertex);
 			 }
@@ -50,7 +50,7 @@ public class Driver {
 			Collections.sort(vertices);
 			
 			for (Vertex v : vertices) {
-				System.out.println(v.getName() + " " + v + " " + "Distance From Ariadne: " + v.getDistanceFromAriadne());
+				System.out.println(v.getName() + " " + v + " " + "Distance From Apollo Landing Site: " + v.getDistanceFromApollo());
 			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
@@ -63,5 +63,18 @@ public class Driver {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	//safely parse an input string to a double value. 
+	private static double getValue(String numberString) {
+		//default value to return if input cannot be parsed into a double (e.g. if it is the empty string)
+		double convertedValue = 0.0;
+		
+		try {
+			convertedValue = Double.valueOf(numberString);
+		} catch (NumberFormatException ex) {
+			//eat the exception. we'll just return 0.0 for missing/malformed values.
+		}
+		return convertedValue;
 	}
 }
